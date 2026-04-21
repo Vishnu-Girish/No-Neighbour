@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Map Coloring Game – Graph Coloring Puzzle</title>
+  <meta name="description" content="Interactive map coloring puzzle game powered by Greedy DSATUR, Divide & Conquer, Dynamic Programming, and Backtracking algorithms." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       START MENU SCREEN
+  ══════════════════════════════════════════ -->
+  <div id="screen-start" class="screen active">
+    <div class="hero-bg">
+      <div class="hero-orb orb1"></div>
+      <div class="hero-orb orb2"></div>
+      <div class="hero-orb orb3"></div>
+    </div>
+
+    <div class="start-container">
+      <!-- Header -->
+      <div class="start-header">
+        <div class="logo-badge">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="8" fill="url(#logoGrad)"/>
+            <path d="M8 8h6v6H8zM18 8h6v6h-6zM8 18h6v6H8zM18 18h6v6h-6z" fill="white" opacity="0.9"/>
+            <defs>
+              <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32">
+                <stop offset="0%" stop-color="#3b82f6"/>
+                <stop offset="100%" stop-color="#1d4ed8"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <h1 class="start-title">Map Coloring Game</h1>
+          <p class="start-subtitle">Graph Coloring Puzzle — Color regions so no two adjacent regions share the same color</p>
+        </div>
+      </div>
+
+      <!-- Cards Row -->
+      <div class="cards-row">
+
+        <!-- Algorithm Selection Card -->
+        <div class="card" id="card-algorithm">
+          <div class="card-header">
+            <span class="card-icon">⚙️</span>
+            <h2 class="card-title">Select Algorithm</h2>
+          </div>
+          <div class="card-body">
+            <label class="radio-option" id="opt-greedy">
+              <input type="radio" name="algorithm" value="greedy" checked />
+              <span class="radio-custom"></span>
+              <div class="radio-text">
+                <span class="radio-name">Greedy — DSATUR</span>
+                <span class="radio-desc">Saturation-degree heuristic · O(n² × k)</span>
+              </div>
+              <span class="badge badge-fast">Fast</span>
+            </label>
+            <label class="radio-option" id="opt-dnc">
+              <input type="radio" name="algorithm" value="divide_conquer" />
+              <span class="radio-custom"></span>
+              <div class="radio-text">
+                <span class="radio-name">Divide &amp; Conquer</span>
+                <span class="radio-desc">Merge/Quick Sort + DSATUR · O(n² log n)</span>
+              </div>
+              <span class="badge badge-moderate">Smart</span>
+            </label>
+            <label class="radio-option" id="opt-dp">
+              <input type="radio" name="algorithm" value="dp" />
+              <span class="radio-custom"></span>
+              <div class="radio-text">
+                <span class="radio-name">Dynamic Programming</span>
+                <span class="radio-desc">Bitmask memoization · O(kⁿ) reduced</span>
+              </div>
+              <span class="badge badge-heavy">Memo</span>
+            </label>
+            <label class="radio-option" id="opt-bt">
+              <input type="radio" name="algorithm" value="backtracking" />
+              <span class="radio-custom"></span>
+              <div class="radio-text">
+                <span class="radio-name">Backtracking</span>
+                <span class="radio-desc">Recursive constraint search · O(kⁿ)</span>
+              </div>
+              <span class="badge badge-heavy">Exact</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Difficulty Selection Card -->
+        <div class="card" id="card-difficulty">
+          <div class="card-header">
+            <span class="card-icon">🎯</span>
+            <h2 class="card-title">Select Difficulty</h2>
+          </div>
+          <div class="card-body">
+            <label class="radio-option diff-option" id="diff-easy">
+              <input type="radio" name="difficulty" value="easy" checked />
+              <span class="radio-custom"></span>
+              <div class="radio-text">
+                <span class="radio-name">Easy</span>
+                <span class="radio-desc">5–10 regions · Perfect for beginners</span>
+              </div>
+              <span class="badge badge-easy">Easy</span>
+            </label>
+            <label class="radio-option diff-option" id="diff-medium">
+              <input type="radio" name="difficulty" value="medium" />
+              <span class="radio-custom"></span>
+              <div class="radio-text">
+                <span class="radio-name">Medium</span>
+                <span class="radio-desc">15–20 regions · Requires planning</span>
+              </div>
+              <span class="badge badge-medium">Medium</span>
+            </label>
+            <label class="radio-option diff-option" id="diff-hard">
+              <input type="radio" name="difficulty" value="hard" />
+              <span class="radio-custom"></span>
+              <div class="radio-text">
+                <span class="radio-name">Hard</span>
+                <span class="radio-desc">25–30 regions · Expert challenge</span>
+              </div>
+              <span class="badge badge-hard">Hard</span>
+            </label>
+          </div>
+          <div class="card-footer-note">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#94a3b8" stroke-width="1.5"/><path d="M7 6v4M7 4.5v.5" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Game must NOT launch without selecting an algorithm.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Start Button -->
+      <button id="btn-start-game" class="btn-primary btn-start" onclick="startGame()">
+        <span>Start Game</span>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M7 5l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+      <!-- Footer -->
+      <p class="start-footer">
+        Graph Coloring Problem · 4 Algorithms · Player vs CPU Mode
+      </p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       GAME SCREEN
+  ══════════════════════════════════════════ -->
+  <div id="screen-game" class="screen">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="btn-icon" id="btn-back" title="Back to Menu">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="topbar-brand">
+          <span class="topbar-title" id="topbar-title">Map Puzzle</span>
+          <span class="topbar-algo" id="topbar-algo">Greedy — DSATUR</span>
+        </div>
+      </div>
+
+      <div class="topbar-center">
+        <!-- Color Picker -->
+        <span class="color-label">Color:</span>
+        <div class="color-picker" id="color-picker">
+          <button class="color-btn color-red active" id="btn-color-red" data-color="1" title="Red">
+            <span class="color-swatch"></span>
+            <span>Red</span>
+          </button>
+          <button class="color-btn color-green" id="btn-color-green" data-color="2" title="Green">
+            <span class="color-swatch"></span>
+            <span>Green</span>
+          </button>
+          <button class="color-btn color-brown" id="btn-color-brown" data-color="3" title="Brown">
+            <span class="color-swatch"></span>
+            <span>Brown</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="score-pill" id="score-display">
+          <span class="score-player" id="score-player">Player: 0</span>
+          <span class="score-divider">|</span>
+          <span class="score-cpu" id="score-cpu">CPU: 0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="game-main">
+
+      <!-- Map Canvas Area -->
+      <div class="map-wrapper">
+        <div class="map-card">
+          <canvas id="map-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Side Panel -->
+      <aside class="side-panel">
+
+        <!-- Difficulty Info -->
+        <div class="info-card">
+          <div class="info-card-header">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#3b82f6" stroke-width="1.5"/><path d="M7 6v4M7 4.5v.5" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Game Info
+          </div>
+          <div class="info-row"><span>Difficulty</span><strong id="info-difficulty">Easy</strong></div>
+          <div class="info-row"><span>Regions</span><strong id="info-regions">10</strong></div>
+          <div class="info-row"><span>Algorithm</span><strong id="info-algo">Greedy DSATUR</strong></div>
+          <div class="info-row"><span>Turn</span><strong id="info-turn">Player</strong></div>
+          <div class="info-row"><span>Colored</span><strong id="info-colored">0 / 10</strong></div>
+        </div>
+
+        <!-- Controls -->
+        <div class="control-card">
+          <div class="info-card-header">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="4" height="4" rx="1" stroke="#3b82f6" stroke-width="1.5"/><rect x="8" y="2" width="4" height="4" rx="1" stroke="#3b82f6" stroke-width="1.5"/><rect x="2" y="8" width="4" height="4" rx="1" stroke="#3b82f6" stroke-width="1.5"/><rect x="8" y="8" width="4" height="4" rx="1" stroke="#3b82f6" stroke-width="1.5"/></svg>
+            Controls
+          </div>
+          <div class="control-grid">
+            <button class="ctrl-btn" id="btn-new-game">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7a5 5 0 1 1 1.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 10.5V7H5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              New Game
+            </button>
+            <button class="ctrl-btn" id="btn-undo">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5h6a3 3 0 0 1 0 6H5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 3L2 5l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Undo
+            </button>
+            <button class="ctrl-btn" id="btn-redo">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M12 5H6a3 3 0 0 0 0 6h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 3l2 2-2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Redo
+            </button>
+            <button class="ctrl-btn ctrl-btn-accent" id="btn-solve">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2l1.5 3.5L12 7l-3.5 1.5L7 12l-1.5-3.5L2 7l3.5-1.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              Auto-Solve
+            </button>
+          </div>
+        </div>
+
+        <!-- Algorithm Info Card -->
+        <div class="algo-card">
+          <div class="info-card-header">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 2v10M10 2v10M2 5h10M2 9h10" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Algorithm Details
+          </div>
+          <div class="algo-detail-row"><span>Name</span><strong id="ad-name">Greedy DSATUR</strong></div>
+          <div class="algo-detail-row"><span>Time</span><strong id="ad-time">O(n² × k)</strong></div>
+          <div class="algo-detail-row"><span>Space</span><strong id="ad-space">O(n)</strong></div>
+        </div>
+
+        <!-- Hint / Status -->
+        <div class="hint-card" id="hint-card">
+          <div class="hint-icon">💡</div>
+          <div class="hint-text" id="hint-text">Your turn — Pick a color above, then click a region on the map to color it.</div>
+        </div>
+
+      </aside>
+    </main>
+
+    <!-- Status Bar -->
+    <footer class="status-bar">
+      <div class="status-text" id="status-text">Your turn — Pick a color and click a region</div>
+    </footer>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MODAL: Algorithm Analysis
+  ══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title">Algorithm Analysis</h3>
+        <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-footer">
+        <button class="btn-primary" id="modal-ok">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MODAL: Confirmation / Alert
+  ══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="alert-overlay" role="dialog" aria-modal="true" aria-labelledby="alert-title">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 id="alert-title">Game</h3>
+        <button class="modal-close" id="alert-close" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body" id="alert-body"></div>
+      <div class="modal-footer">
+        <button class="btn-primary" id="alert-ok">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
